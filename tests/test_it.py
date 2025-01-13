@@ -2,29 +2,33 @@ import unittest
 from unittest.mock import patch
 
 from main import main
-from tests.mock import mock_page_response
+from tests.mock import aiohttp_clientsession_mock, mock_download_images
 
 
 class CollateralAdjectivesTest(unittest.IsolatedAsyncioTestCase):
-    @patch('wikipedia.page', return_value=mock_page_response())
-    def setUp(self, _):
-        super().setUp()
-        self.collateral_adjectives_animals = main()
-
-    async def test_bat_in_two_c_adjectives(self):
+    @patch('main.download_animal_pic', side_effect=mock_download_images)
+    @patch('aiohttp.ClientSession', return_value=aiohttp_clientsession_mock())
+    async def test_bat_in_two_c_adjectives(self, _, __):
+        collateral_adjectives_animals = await main()
         animal = 'Bat'
         c_adjective = 'noctillionine'
         second_c_adjective = 'pteropine'
-        self.assertIn(animal, self.collateral_adjectives_animals[c_adjective])
-        self.assertIn(animal, self.collateral_adjectives_animals[second_c_adjective])
+        self.assertIn(animal, collateral_adjectives_animals[c_adjective])
+        self.assertIn(animal, collateral_adjectives_animals[second_c_adjective])
 
-    async def test_simian(self):
+    @patch('main.download_animal_pic', side_effect=mock_download_images)
+    @patch('aiohttp.ClientSession', return_value=aiohttp_clientsession_mock())
+    async def test_simian(self, _, __):
+        collateral_adjectives_animals = await main()
         c_adjective = 'simian'
-        self.assertIn('Gorilla', self.collateral_adjectives_animals[c_adjective])
-        self.assertIn('Human', self.collateral_adjectives_animals[c_adjective])
-        self.assertIn('Ape', self.collateral_adjectives_animals[c_adjective])
+        self.assertIn('Gorilla', collateral_adjectives_animals[c_adjective])
+        self.assertIn('Human', collateral_adjectives_animals[c_adjective])
+        self.assertIn('Ape', collateral_adjectives_animals[c_adjective])
 
-    async def test_ursine(self):
+    @patch('main.download_animal_pic', side_effect=mock_download_images)
+    @patch('aiohttp.ClientSession', return_value=aiohttp_clientsession_mock())
+    async def test_ursine(self, _, __):
+        collateral_adjectives_animals = await main()
         c_adjective = 'ursine'
-        self.assertIn(c_adjective, self.collateral_adjectives_animals)
-        self.assertEqual(len(self.collateral_adjectives_animals[c_adjective]), 2)
+        self.assertIn(c_adjective, collateral_adjectives_animals)
+        self.assertEqual(len(collateral_adjectives_animals[c_adjective]), 2)
