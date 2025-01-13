@@ -54,6 +54,6 @@ python main.py
 Run unittest command:
 
 ```shell
-python -m unittest tests
+python -m unittest tests.test_it
   
 ```
